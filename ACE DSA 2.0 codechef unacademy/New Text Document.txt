@@ -1,0 +1,82 @@
+int minStepsBU(int n) {
+        vector<int> dp(n+1, INT_MAX);
+        // base case
+        dp[2] = 1;
+        dp[3] = 1;
+        for(int i = 4; i<= n; i++) {
+                int div_by_3 = INT_MAX, div_by_2 = INT_MAX, sub_by_1 = INT_MAX;
+                if(i % 3 == 0) {
+                        div_by_3 = dp[i/3];
+                }
+                if(i % 2 == 0) {
+                        div_by_2 = dp[i/2];
+                }
+                sub_by_1 = dp[i-1];
+
+                dp[i] = 1 + min({div_by_3, div_by_2, sub_by_1});
+        }
+        
+        return dp[n];
+}
+
+int minStepsTD(int n, vector<int> &dp) {
+        if(n == 2 or n == 3) return 1; 
+
+        if(dp[n] != INT_MAX) return dp[n];
+
+        int div_by_3 = INT_MAX, div_by_2 = INT_MAX, sub_by_1 = INT_MAX;
+        if(n % 3 == 0) {
+                div_by_3 = minStepsTD(n/3, dp);
+        }
+        if(n % 2 == 0) {
+                div_by_2 = minStepsTD(n/2, dp);
+        }
+        sub_by_1 = minStepsTD(n-1, dp);;
+
+        dp[n] = 1 + min({div_by_3, div_by_2, sub_by_1});
+        
+        
+        return dp[n];
+}
+
+int maxProfitByRobbingTD(int i, int *gold, vector<int> &dp) {
+        if(i == 0) return gold[0];
+        if(i == 1) return max(gold[0], gold[1]);
+        if(dp[i] != -1) return dp[i];
+        return dp[i] = max(maxProfitByRobbingTD(i-2, gold, dp) + gold[i], maxProfitByRobbingTD(i-1, gold, dp));
+}
+
+int maxProfitByRobbing(int i, int *gold) {
+        if(i == 0) return gold[0];
+        if(i == 1) return max(gold[0], gold[1]);
+
+        return max(maxProfitByRobbing(i-2, gold) + gold[i], maxProfitByRobbing(i-1, gold));
+}
+
+// top down dp = memoization
+int fib(int n, int *dp) {
+        if(n == 0 or n == 1) return n;
+        if(dp[n] != -1) {
+                // if dp[n] was -1 that means we are calculating for the first time
+                // if dp[n] is not -1 then we already have a right ans
+                return dp[n];
+        }
+        return dp[n] = fib(n-1, dp) + fib(n-2, dp);
+}
+
+
+// bottom up - tabulation
+int fibBU(int n) {
+        int a = 0, b = 1, c;
+        if(n == 0 or n == 1) return n;
+
+        for(int i = 2; i <= n; i++) {
+                c = a + b;
+                a = b;
+                b = c;
+        }
+        return c;
+}
+
+
+/// Notes: https://github.com/singhsanket143/Unacademy-Notes/blob/main/Do%20Intro%20Ace%20Dsa2.pdf
